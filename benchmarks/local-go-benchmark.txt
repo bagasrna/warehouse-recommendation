@@ -1,0 +1,10 @@
+goos: linux
+goarch: amd64
+pkg: example.com/simpul-warehouse-selection/internal/selection
+cpu: AMD EPYC 9V74 80-Core Processor                
+BenchmarkSelection/one_sku_one_warehouse-5         	    6164	     43914 ns/op	   59750 B/op	     270 allocs/op
+BenchmarkSelection/one_sku_multiple_warehouses-5   	    6333	     51786 ns/op	   60295 B/op	     278 allocs/op
+BenchmarkSelection/several_skus-5                  	    3645	     75289 ns/op	   62119 B/op	     303 allocs/op
+BenchmarkSelection/insufficient-5                  	  812007	       461.2 ns/op	     104 B/op	       4 allocs/op
+PASS
+ok  	example.com/simpul-warehouse-selection/internal/selection	1.456s

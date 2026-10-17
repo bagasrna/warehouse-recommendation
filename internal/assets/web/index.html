@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f5f8f7" />
+  <meta name="description" content="An explainable warehouse selection simulator for healthcare distribution." />
+  <title>Warehouse Recommendation · Selection Engine</title>
+  <script>
+    // Light is the first-visit default; restore a deliberate user selection only.
+    try {
+      if (localStorage.getItem('warehouse-recommendation-theme') === 'dark') {
+        document.documentElement.dataset.theme = 'dark';
+      }
+    } catch (_) { /* Storage may be disabled. Light mode remains available. */ }
+  </script>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/style.css" />
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Warehouse Recommendation home">
+        <span class="brand-symbol" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none"><path d="m16 3 11.1 6.5v13L16 29 4.9 22.5v-13L16 3Z" stroke="currentColor" stroke-width="1.8"/><path d="M5.3 9.8 16 16l10.7-6.2M16 16v12.5" stroke="currentColor" stroke-width="1.8"/><path d="m10.1 6.5 11.4 6.7" stroke="currentColor" stroke-width="1.5"/></svg>
+        </span>
+        <span class="brand-name">warehouse<span>recommendation</span><small>DECISION ENGINE</small></span>
+      </a>
+      <nav aria-label="Page sections" class="site-nav">
+        <a href="#simulator" class="nav-active">Simulator</a>
+        <a href="#insights">Historical insights</a>
+        <a href="#methodology">Methodology</a>
+      </nav>
+      <div class="topbar-actions">
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false" title="Switch to dark mode">
+          <svg class="theme-icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/></svg>
+          <svg class="theme-icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
+          <span class="theme-label">Dark mode</span>
+        </button>
+        <div class="connection"><span class="live-dot" aria-hidden="true"></span><span>Simulation mode</span></div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="pill-icon">✧</span> HEALTHCARE LOGISTICS / PROOF OF CONCEPT</div>
+          <h1>Smarter fulfillment.<br/><span>Defensible decisions.</span></h1>
+          <p>Find the best warehouse combination for every medical supply order. Built for stock accuracy, cold-chain safety, and transparent routing trade-offs.</p>
+          <div class="hero-tags"><span>✓ Stock-aware</span><span>✓ Cold-chain safe</span><span>✓ Explainable results</span></div>
+        </div>
+        <div class="hero-decoration" aria-hidden="true">
+          <div class="map-grid"></div>
+          <svg viewBox="0 0 370 260" role="img" aria-hidden="true">
+            <path d="M51 202Q74 131 142 145T257 78T344 50" fill="none" stroke="#cce1dc" stroke-width="2" stroke-dasharray="7 9"/>
+            <path d="M51 202Q75 133 142 145T257 78" fill="none" stroke="#1f7a65" stroke-width="3"/>
+            <circle cx="51" cy="202" r="11" fill="#fff" stroke="#207c68" stroke-width="3"/><circle cx="51" cy="202" r="4.5" fill="#207c68"/>
+            <circle cx="142" cy="145" r="10" fill="#e6f5ec" stroke="#207c68" stroke-width="3"/><circle cx="142" cy="145" r="3.5" fill="#207c68"/>
+            <circle cx="257" cy="78" r="14" fill="#207c68"/><path d="m251 78 4 4 8-9" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="344" cy="50" r="8" fill="#e0e8e4" stroke="#a8bfb5" stroke-width="2"/>
+            <g fill="#375b51" font-family="sans-serif" font-size="12" font-weight="600"><text x="31" y="232">Customer</text><text x="122" y="174">W04</text><text x="237" y="107">W07</text></g>
+            <g fill="#749188" font-family="sans-serif" font-size="10"><text x="236" y="123">Cold chain ✓</text><text x="312" y="72">W08</text></g>
+          </svg>
+          <div class="floating-label"><span class="small-check">✓</span><span>Safety constraint<br/><strong>Passed</strong></span></div>
+        </div>
+      </section>
+
+      <section id="simulator" class="workspace" aria-labelledby="simulator-title">
+        <div class="section-heading"><div><span class="section-kicker">01 / RECOMMENDATION SIMULATOR</span><h2 id="simulator-title">Build an order</h2><p>Add products and quantities to find the most efficient eligible warehouses.</p></div><span class="stage-tag">READ-ONLY SIMULATION</span></div>
+        <div class="workspace-grid">
+          <section class="surface order-panel" aria-label="Order form">
+            <div class="panel-heading"><div><span class="heading-icon">▤</span><h3>Order details</h3></div><span class="count-tag" id="item-count">1 item</span></div>
+            <div class="table-head"><span>PRODUCT</span><span>QUANTITY</span><span></span></div>
+            <form id="order-form" novalidate>
+              <div id="order-items" class="order-items"></div>
+              <button type="button" id="add-item" class="add-button"><span aria-hidden="true">＋</span> Add another product</button>
+              <div class="form-divider"></div>
+              <div class="presets"><span>TRY AN EXAMPLE</span><div class="preset-list"><button type="button" data-preset="routine">Routine supplies</button><button type="button" data-preset="vaccine">Cold-chain order</button><button type="button" data-preset="shortage">Insufficient stock</button></div></div>
+              <div class="schedule-section">
+                <div class="schedule-heading"><strong>Planned dispatch <span class="optional-label">OPTIONAL BONUS</span></strong><p>Add a departure day and time to consider matching delivery history when warehouse scores tie.</p></div>
+                <div class="schedule-grid">
+                  <label class="schedule-field" for="delivery-day"><span>DAY</span>
+                    <select id="delivery-day" aria-label="Planned delivery departure day">
+                      <option value="">No schedule (core selection)</option>
+                      <option value="Mon">Monday</option><option value="Tue">Tuesday</option><option value="Wed">Wednesday</option><option value="Thu">Thursday</option><option value="Fri">Friday</option><option value="Sat">Saturday</option><option value="Sun">Sunday</option>
+                    </select>
+                  </label>
+                  <label class="schedule-field" for="delivery-time"><span>DEPARTURE TIME (WIB)</span><input id="delivery-time" type="time" value="08:00" disabled /></label>
+                </div>
+                <p class="schedule-help">Weekday peak: 07:00–09:59 / 16:00–18:59 · Weekend: Sat–Sun. Advisory sample means, not a live ETA.</p>
+              </div>
+              <button type="submit" id="submit-order" class="primary-button"><span id="submit-label">Find optimal warehouses</span><span aria-hidden="true">↗</span></button>
+              <p class="footnote">No inventory is reserved or deducted. Recommendations are calculated on every request.</p>
+            </form>
+          </section>
+          <section class="surface result-panel" aria-label="Recommendation results">
+            <div class="panel-heading"><div><span class="heading-icon accent">⌁</span><h3>Selection result</h3></div><span class="result-state neutral" id="result-state">AWAITING ORDER</span></div>
+            <div id="result-content" aria-live="polite" aria-atomic="true">
+              <div class="empty-state"><span class="empty-icon" aria-hidden="true">◎</span><h3>Your best route starts here.</h3><p>Configure your order, then run the selection engine to see optimal warehouse allocations and why they were chosen.</p><div class="empty-line"></div><span class="empty-caption">A deterministic, score-based recommendation</span></div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="overview-strip" aria-label="System overview">
+        <div class="strip-cell"><span class="strip-icon">▦</span><div><strong id="warehouse-stat">8</strong><small>WAREHOUSES</small></div></div>
+        <div class="strip-cell"><span class="strip-icon">◈</span><div><strong id="product-stat">5</strong><small>PRODUCT TYPES</small></div></div>
+        <div class="strip-cell"><span class="strip-icon">◎</span><div><strong>255</strong><small>POSSIBLE COMBINATIONS</small></div></div>
+        <div class="strip-cell"><span class="strip-icon">⊕</span><div><strong><span id="penalty-stat">20</span> <i>km-eq</i></strong><small>ADDITIONAL WAREHOUSE PENALTY</small></div></div>
+      </section>
+
+      <section id="insights" class="insights-section" aria-labelledby="insight-title">
+        <div class="section-heading"><div><span class="section-kicker">02 / OPTIONAL DATA EXPLORATION</span><h2 id="insight-title">A look at historical deliveries</h2><p>38 deliveries grouped by warehouse and departure period. A time-aware tie-breaker is optional; these sample means are not a guaranteed ETA.</p></div><span class="stage-tag">BONUS INSIGHT</span></div>
+        <div class="surface insight-panel"><div class="insight-top"><div><strong>Historical duration by warehouse and departure period</strong><p>Overall average + period averages · Minutes · Sample size shown</p></div><span id="history-count" class="count-tag">Loading…</span></div><div id="insight-bars" class="bar-grid"><p class="muted">Loading historical sample…</p></div><div class="insight-note"><span aria-hidden="true">ⓘ</span><p>Small and uneven samples, with different days and departure times. These averages are indicative only. <strong>The balanced score never changes</strong>; only an exact score tie can be resolved with period-specific data, and only with at least 2 matching records for every warehouse in both compared options. If data is sparse, the original decision is kept.</p></div></div>
+      </section>
+
+      <section id="methodology" class="method-section" aria-labelledby="method-title">
+        <div class="section-heading"><div><span class="section-kicker">03 / ENGINEERING PRINCIPLES</span><h2 id="method-title">How a decision is made</h2><p>Safety rules first. Mathematical optimization second.</p></div></div>
+        <div class="method-grid">
+          <article class="method-card"><span class="method-num">01</span><div class="method-icon">▧</div><h3>Validate & check stock</h3><p>Normalize order items and confirm all requested quantities can be fulfilled with eligible inventory.</p></article>
+          <article class="method-card"><span class="method-num">02</span><div class="method-icon">✳</div><h3>Enforce cold-chain safety</h3><p>Vaccines require both refrigerated storage and refrigerated delivery vehicles. No unsafe fallback.</p></article>
+          <article class="method-card"><span class="method-num">03</span><div class="method-icon">▥</div><h3>Evaluate every combination</h3><p>Enumerate all 255 non-empty warehouse subsets and discard combinations that cannot fill the whole order.</p></article>
+          <article class="method-card"><span class="method-num">04</span><div class="method-icon">⌁</div><h3>Rank & allocate</h3><p>Minimize distance plus dispatch penalty. Optional matching delivery history breaks exact score ties when enough period samples exist; otherwise use original tie-breakers.</p></article>
+        </div>
+        <div class="formula-banner"><span>THE DECISION RULE</span><strong>Score = Σ warehouse distance + <span id="penalty-formula">20</span> × (warehouse count − 1)</strong><small>Lower is better · Distances are one-way · Score is km-equivalent, not shipping cost</small></div>
+      </section>
+    </main>
+    <footer><div class="footer-brand">warehouse<span>recommendation</span></div><div>Healthcare supply routing · Engineering proof of concept</div><div>Built with Go · Single-container deployment</div></footer>
+  </div>
+</body>
+</html>

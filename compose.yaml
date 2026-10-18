@@ -1,11 +1,13 @@
 services:
-  app:
+  simpul:
     build: .
     restart: unless-stopped
     environment:
       PORT: "8080"
-    ports:
-      - "127.0.0.1:8080:8080"
+    networks:
+      default:
+        aliases: [app]
+      edge:
     logging:
       driver: json-file
       options:
@@ -20,9 +22,17 @@ services:
     environment:
       TUNNEL_TOKEN: ${TUNNEL_TOKEN:-}
     depends_on:
-      - app
+      - simpul
+    networks:
+      - default
+      - edge
     logging:
       driver: json-file
       options:
         max-size: "10m"
         max-file: "3"
+
+networks:
+  edge:
+    external: true
+    name: cloudflare-edge
